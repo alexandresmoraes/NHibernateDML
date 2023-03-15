@@ -60,8 +60,8 @@ namespace NHibernateDML.Controllers
       return pessoa;
     }
 
-    [HttpGet("dml")]
-    public object? Dml()
+    [HttpGet("dml/insert")]
+    public object? Insert()
     {
       object? pessoaId = null;
 
@@ -73,6 +73,38 @@ namespace NHibernateDML.Controllers
         .Into<Clone>()
         .Value(d => d.Nome, c => c.Nome)
         .Insert();
+      });
+
+      return pessoaId;
+    }
+
+    [HttpGet("dml/update")]
+    public object? Update()
+    {
+      object? pessoaId = null;
+
+      _sessionManager.UsingTransaction((session) =>
+      {
+        pessoaId = session.Query<Pessoa>()
+        .Where(c => c.Id == 1)
+        .UpdateBuilder()
+        .Set(d => d.Nome, c => c.Nome + "_prefix" + "_prefix2")
+        .Update();
+      });
+
+      return pessoaId;
+    }
+
+    [HttpGet("dml/delete")]
+    public object? Delete()
+    {
+      object? pessoaId = null;
+
+      _sessionManager.UsingTransaction((session) =>
+      {
+        pessoaId = session.Query<Pessoa>()
+        .Where(c => c.Id == 1)
+        .Delete();
       });
 
       return pessoaId;
